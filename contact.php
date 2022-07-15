@@ -2,17 +2,41 @@
 $title = 'お問い合わせ';
 $isCompleted = false;
 
+$name = null;
+$email = null;
+$content = null;
+
+$errorName = null;
+$errorEmail = null;
+$errorContent = null;
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $contact =
-        $_POST['name'] . "\n"
-        . $_POST['email'] . "\n"
-        . $_POST['content'] . "\n"
-    ;
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $content = $_POST['content'];
 
-    file_put_contents(__DIR__ . '/contact.txt', $contact);
+    if (!$name) {
+        $errorName = 'お名前を入力してください。';
+    }
+    if (!$email) {
+        $errorEmail = 'メールアドレスを入力してください。';
+    }
+    if (!$content) {
+        $errorContent = 'お問い合わせ内容を入力してください。';
+    }
 
-    $title .= ' (完了)';
-    $isCompleted = true;
+    if (!$errorName && !$errorEmail && !$errorContent) {
+        $contact =
+            $_POST['name'] . "\n"
+            . $_POST['email'] . "\n"
+            . $_POST['content'] . "\n"
+        ;
+
+        file_put_contents(__DIR__ . '/contact.txt', $contact);
+
+        $title .= ' (完了)';
+        $isCompleted = true;
+    }
 }
 ?>
 <!doctype html>
@@ -27,14 +51,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php if (!$isCompleted) { ?>
         <form method="POST">
             <div>
-                お名前: <input type="text" name="name" />
+                お名前: <input type="text" name="name" value="<?= $name ?>" />
+                <?= $errorName ?>
             </div>
             <div>
-                メールアドレス: <input type="email" name="email" />
+                メールアドレス: <input type="email" name="email" value="<?= $email ?>" />
+                <?= $errorEmail ?>
             </div>
             <div>
                 お問い合わせ内容:
-                <textarea name="content" rows="10"></textarea>
+                <textarea name="content" rows="10"><?= $content ?></textarea>
+                <?= $errorContent ?>
             </div>
 
             <button type="submit">お問い合わせする</button>
