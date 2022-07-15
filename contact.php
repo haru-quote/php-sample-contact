@@ -3,6 +3,14 @@ $title = 'お問い合わせ';
 $isCompleted = false;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $contact =
+        $_POST['name'] . "\n"
+        . $_POST['email'] . "\n"
+        . $_POST['content'] . "\n"
+    ;
+
+    file_put_contents(__DIR__ . '/contact.txt', $contact);
+
     $title .= ' (完了)';
     $isCompleted = true;
 }
